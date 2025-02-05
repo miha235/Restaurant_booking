@@ -8,39 +8,68 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.TextField(blank=True)),
-                ('text', models.TextField(blank=True)),
-                ('email', models.EmailField(max_length=254)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.TextField(blank=True)),
+                ("text", models.TextField(blank=True)),
+                ("email", models.EmailField(max_length=254)),
             ],
         ),
         migrations.CreateModel(
-            name='Table',
+            name="Table",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.PositiveIntegerField(unique=True)),
-                ('seats', models.PositiveIntegerField()),
-                ('description', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.PositiveIntegerField(unique=True)),
+                ("seats", models.PositiveIntegerField()),
+                ("description", models.TextField(blank=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Reservation',
+            name="Reservation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('time', models.TimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('guests', models.PositiveIntegerField(default=1)),
-                ('token', models.CharField(blank=True, max_length=100, null=True)),
-                ('is_confirmed', models.BooleanField(default=False)),
-                ('table', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reservations.table')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("time", models.TimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("guests", models.PositiveIntegerField(default=1)),
+                ("token", models.CharField(blank=True, max_length=100, null=True)),
+                ("is_confirmed", models.BooleanField(default=False)),
+                (
+                    "table",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="reservations.table",
+                    ),
+                ),
             ],
         ),
     ]

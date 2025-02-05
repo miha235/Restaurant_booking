@@ -11,22 +11,30 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .forms import ReservationForm, MessageForm
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView , DetailView , CreateView , UpdateView , DeleteView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 
 
 def index(request):
     """Главная страница."""
-    return render(request, 'index.html')
+    return render(request, "index.html")
+
 
 def about(request):
     """Страница "О ресторане"."""
-    return render(request, 'about.html')
+    return render(request, "about.html")
+
 
 class Reservation_Create(LoginRequiredMixin, CreateView):
     model = Reservation
     form_class = ReservationForm
-    template_name = 'reservation_form.html'
-    #fields = ("name", "description", "image", "price", "category")
+    template_name = "reservation_form.html"
+    # fields = ("name", "description", "image", "price", "category")
 
     def form_valid(self, form):
         reservation = form.save()
@@ -34,12 +42,13 @@ class Reservation_Create(LoginRequiredMixin, CreateView):
         reservation.save()
         return super(Reservation_Create, self).form_valid(form)
 
+
 class Reservation_Update(LoginRequiredMixin, UpdateView):
     model = Reservation
     form_class = ReservationForm
-    template_name = 'reservation_form.html'
-    #fields = ("date", "time", "guests", "table")
-    success_url = reverse_lazy ('profile' )
+    template_name = "reservation_form.html"
+    # fields = ("date", "time", "guests", "table")
+    success_url = reverse_lazy("profile")
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -48,10 +57,11 @@ class Reservation_Update(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         reservation = self.object
         reservation.user_id = self.request.user
-        #print(form.instance.id, self.kwargs['pk'])
-        #super(Reservation_Update, self).save(form)
+        # print(form.instance.id, self.kwargs['pk'])
+        # super(Reservation_Update, self).save(form)
         reservation.save()
         return super(Reservation_Update, self).form_valid(form)
+
 
 # def reservation_view(request, id):
 #     """Страница бронирования."""
@@ -65,31 +75,43 @@ class Reservation_Update(LoginRequiredMixin, UpdateView):
 #         return render(request, 'reservations.html', {'success': True, 'date': date, 'time': time, 'guests': guests})
 #     return render(request, 'reservations.html')
 
+
 def reservation_update(request, id):
     res = Reservation.objects.filter(id=id).first()
     """Страница бронирования."""
     print(res.id, res.date, res.table)
-    return render(request, 'reservations.html', {'success': True, 'date': res.date, 'time': res.time, 'guests': res.guests, 'table': res.table})
+    return render(
+        request,
+        "reservations.html",
+        {
+            "success": True,
+            "date": res.date,
+            "time": res.time,
+            "guests": res.guests,
+            "table": res.table,
+        },
+    )
+
 
 def reservation_delete(request, id):
     print(id)
     res = Reservation.objects.filter(id=id).delete()
     res = Reservation.objects.filter(user=request.user)
     """Страница бронирования."""
-    return render(request, 'profile.html', {'reservations': res})
+    return render(request, "profile.html", {"reservations": res})
 
 
 def book(request):
-    ''' Функция бронирования столика
+    """Функция бронирования столика
     Пользователь выбирает дату, время, указывает количество человек и желаемый столик.
     Если
-    '''
-    if request.method == 'POST':
+    """
+    if request.method == "POST":
         # Извлекаем данные из формы
-        date = request.POST.get('date')
-        time = request.POST.get('time')
-        guests = request.POST.get('guests')
-        table = request.POST.get('table')
+        date = request.POST.get("date")
+        time = request.POST.get("time")
+        guests = request.POST.get("guests")
+        table = request.POST.get("table")
 
         # добавить отправку уведомления
         selected_table = Table.objects.filter(number=int(table)).first()
@@ -97,20 +119,23 @@ def book(request):
         print(selected_table)
         user_id = request.user.id
 
-        reservation = Reservation.objects.create(date=date, time=time, table_id=selected_table.id, user_id=user_id) # временно - без привзяки к пользователю
-
+        reservation = Reservation.objects.create(
+            date=date, time=time, table_id=selected_table.id, user_id=user_id
+        )  # временно - без привзяки к пользователю
 
         # Отправка письма с информацией о бронировании
-        token = secrets.token_hex(16) # verification_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        token = secrets.token_hex(
+            16
+        )  # verification_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
         reservation.token = token
         reservation.save()
         host = request.get_host()
-        url = f'http://{host}/reservations/email_confirm/{token}'
+        url = f"http://{host}/reservations/email_confirm/{token}"
         try:
             send_mail(
-                'Бронирование ',
-                f'Ваше бронирование в Work & Dine:\nCтолик № {table}\nВремя: {date} в {time}\nГостей: {guests} чел.'
-                f'\n\nДля подтверждения брони пройдети по ссылке {url}',
+                "Бронирование ",
+                f"Ваше бронирование в Work & Dine:\nCтолик № {table}\nВремя: {date} в {time}\nГостей: {guests} чел."
+                f"\n\nДля подтверждения брони пройдети по ссылке {url}",
                 settings.EMAIL_HOST_USER,  # Email отправителя из settings.py
                 [request.user.email],  # Email получателя
                 fail_silently=False,
@@ -120,24 +145,29 @@ def book(request):
             # Логирование или обработка ошибки
             print(f"Ошибка при отправке письма с деталями брони: {e}")
 
-
         # После успешного бронирования перенаправляем на страницу успеха
-        return render(request, 'reservation_success.html', {
-            'date': date,
-            'time': time,
-            'guests': guests,
-        })
+        return render(
+            request,
+            "reservation_success.html",
+            {
+                "date": date,
+                "time": time,
+                "guests": guests,
+            },
+        )
 
     # Если запрос не POST, перенаправляем на страницу бронирования
-    return redirect('reservation')
+    return redirect("reservation")
+
 
 def reservation_confirm(request, token):
     print(token)
     reservation = get_object_or_404(Reservation, token=token)
-    print(reservation, ' - бронирование подтверждено')
+    print(reservation, " - бронирование подтверждено")
     reservation.is_confirmed = True
     reservation.save()
     return redirect(reverse("profile"))
+
 
 def profile(request):
     """Личный кабинет."""
@@ -145,7 +175,8 @@ def profile(request):
     user_id = request.user.id
     reservations = Reservation.objects.filter(user=user_id, is_confirmed=True)
 
-    return render(request, 'profile.html', {'reservations': reservations})
+    return render(request, "profile.html", {"reservations": reservations})
+
 
 # def contact(request):
 #     if request.method == 'POST':
@@ -157,12 +188,15 @@ def profile(request):
 #         return HttpResponse("Спасибо за ваше сообщение!")
 #     return render(request, 'contact.html')  # Возвращаем форму на странице
 
-class Message_Create(CreateView): # Без LoginRequiredMixin - незарегистрированные пользователи тоже могут писать.
+
+class Message_Create(
+    CreateView
+):  # Без LoginRequiredMixin - незарегистрированные пользователи тоже могут писать.
     model = Message
     form_class = MessageForm
-    template_name = 'contact.html'
-    success_url = reverse_lazy('index')
-    #fields = ("name", "email", "text")
+    template_name = "contact.html"
+    success_url = reverse_lazy("index")
+    # fields = ("name", "email", "text")
 
     # def form_valid(self, form):
     #     print('!')

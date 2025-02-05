@@ -3,6 +3,7 @@ from django.db import models
 
 User = get_user_model()
 
+
 class Table(models.Model):
     number = models.PositiveIntegerField(unique=True)
     seats = models.PositiveIntegerField()
@@ -10,6 +11,7 @@ class Table(models.Model):
 
     def __str__(self):
         return f"Table {self.number} - {self.seats} seats"
+
 
 class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -22,12 +24,12 @@ class Reservation(models.Model):
         max_length=100,
         blank=True,
         null=True,
-
     )
     is_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Reservation for {self.user} on {self.date} at {self.time} ({self.guests} person(s)"
+
 
 class Message(models.Model):
     name = models.TextField(blank=True)
