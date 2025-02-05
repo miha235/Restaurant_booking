@@ -8,3 +8,5 @@ class TableAdmin(admin.ModelAdmin):
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ('user', 'table', 'date', 'time', 'created_at')
+
+

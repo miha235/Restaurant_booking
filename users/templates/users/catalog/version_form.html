@@ -1,0 +1,9 @@
+{% extends 'catalog/catalog_base.html' %}
+{% block content %}
+  <h2>Создание новой версии</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Создать версию</button>
+  </form>
+{% endblock %}
