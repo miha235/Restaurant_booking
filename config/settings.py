@@ -83,9 +83,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_DIRS = [
-    "/Users/victoria.damanskaya/Restraurant_project/restaurant_booking/static",
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
