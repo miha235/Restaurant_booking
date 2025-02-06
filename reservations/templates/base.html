@@ -21,7 +21,7 @@
             padding: 2rem 0;
         }
         header nav a {
-            color: white;
+            color: black;
             margin: 0 15px;
             text-decoration: none;
             font-weight: bold;
@@ -123,6 +123,22 @@
             <a href="/about/">О нас</a>
             <a href="/reservations/">Бронирование</a>
             <a href="/contact/">Контакты</a>
+            <a href="/profile/">Личный кабинет</a>
+            <a> {{ user }} </a>
+            <div class="ms-2">
+                {% if user.is_authenticated %}
+                    <div>
+                    <form id="logout-form" action="{% url "users:logout" %}" method="POST">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-primary me-2">Выйти</button>
+                    </form>
+                    </div>
+                {% else %}
+                    {% csrf_token %}
+                    <a class="btn btn-primary me-2" href="{% url 'users:register' %}">Регистрация</a>
+                    <a class="btn btn-secondary" href="{% url 'users:login' %}">Вход</a>
+                {% endif %}
+            </div>
         </nav>
     </header>
     <main>

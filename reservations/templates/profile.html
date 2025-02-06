@@ -7,14 +7,20 @@
 {% block content %}
 <div class="container">
   <h2>Мои бронирования</h2>
+
   <ul class="list-group">
     {% for reservation in reservations %}
       <li class="list-group-item">
         Дата: {{ reservation.date }}, Время: {{ reservation.time }}, Столик: {{ reservation.table }}
+          <td>
+            <a href="{% url 'reservation_update' reservation.id %}" class="btn btn-warning btn-sm">Редактировать</a>
+            <a href="{% url 'reservation_delete' reservation.id %}" class="btn btn-danger btn-sm">Удалить</a>
+          </td>
       </li>
     {% endfor %}
   </ul>
-  <a href="/profile/edit/" class="btn btn-warning">Изменить бронирование</a>
-  <a href="/profile/cancel/" class="btn btn-danger">Отменить бронирование</a>
+    <div> <br>
+        * Вам видны только подтвержденные бронирования. Для подтверждения бронирования, пройдите по ссылке в письме с информацией о бронировании, отправленном на ваш почтовый ящик.
+    </div>
 </div>
 {% endblock %}
