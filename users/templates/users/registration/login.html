@@ -1,3 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +18,10 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Войти</button>
+        <button class="btn btn-primary">Войти</button>
     </form>
     <p>Ещё нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрируйтесь</a></p>
 </body>
 </html>
+
+{% endblock %}
