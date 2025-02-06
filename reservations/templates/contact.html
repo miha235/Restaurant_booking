@@ -1,21 +1,34 @@
-<form action="/contact/" method="POST">
-    {% csrf_token %}
+{% extends "base.html" %}
 
-        <div>
-            <label for="name">Ваше имя:</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div>
-            <label for="email">Ваш email:</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div>
-            <label for="message">Сообщение:</label>
-            <textarea id="message" name="message" required></textarea>
-        </div>
-            * Для бронирования и ускоренного получения ответа <a href="{% url 'users:register' %} ">зарегистрируйтесь</a>
+{% block title %}Контакты - Work & Dine{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Свяжитесь с нами</h2>
+    <p>Оставьте ваше сообщение, и мы свяжемся с вами.</p>
+
+    <form action="/contact/" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">Ваше имя:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
         </div>
 
+        <div class="mb-3">
+            <label for="email" class="form-label">Ваш email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
 
-    <button type="submit">Отправить</button>
-</form>
+        <div class="mb-3">
+            <label for="message" class="form-label">Сообщение:</label>
+            <textarea id="message" name="message" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <p>* Для бронирования и ускоренного получения ответа
+            <a href="{% url 'users:register' %}">зарегистрируйтесь</a>.
+        </p>
+
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+{% endblock %}
